@@ -1,0 +1,14 @@
+FROM node:20-alpine
+WORKDIR /var/www/html
+RUN npm install -g pm2 nodemon npm@10.5.0
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
+RUN apk --no-cache add shadow && usermod -u 1000 node
+COPY ["ecosystem.config.js","package.json", "./"]
+RUN npm install
+COPY . .
+USER node
+RUN chown -R node:node .
+EXPOSE 81
+#CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]
+#CMD ["pm2-runtime", "ecosystem.config.js", "--env", "production"]
